@@ -1,0 +1,43 @@
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/fs.h>
+#include <asm/segment.h>
+#include <asm/uaccess.h>
+#include <linux/buffer_head.h>
+#include <asm/page.h>
+#include <linux/slab.h>
+
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("TEST");
+MODULE_DESCRIPTION("read test");
+MODULE_VERSION("0.01");
+
+static int __init read_init(void) {
+	mm_segment_t old_fs;
+	struct file *fd;
+	fd = filp_open("/etc/passwd", O_RDONLY, 0);
+	if (fd == NULL) {
+		printk(KERN_INFO "open failed");
+		return 0;
+	}
+	else {
+		olf_fs = get_fs();
+		set_fs(KERNEL_DS);
+		char buf[PAGE_SIZE];
+		int r = 0;
+		r = fd->f_op->read(fd, buf, PAGE_SIZE, &fd->f_pos);
+		printk(KERN_INFO "open sucess, content: \n%s", buf);
+		set_fs(old_fs);
+	}
+	filp_close(fd, NULL);
+	return 0;
+}
+
+static void __exit read_exit(void) {
+	printk(KERN_INFO "exiting read\n");
+}
+
+module_init(read_init);
+module_exit(read_exit);
