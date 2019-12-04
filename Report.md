@@ -1,6 +1,11 @@
 # Hail Mary CSE331 Project 1
 ## Authors
-Ian Peitzsch, Mathews Thankachan, Xinhang Xie
+- Ian Peitzsch
+  - Modified syscalls
+- Mathews Thankachan
+  - Made /proc/hidePid writing system
+- Xinhang Xie
+  - Made backdoor
 ## About
 This project is a rootkit in the form of a loadable kernel module for Linux Kernel version 2.6.38.8 and has been tested on Ubuntu 11.04 32-bit version. This rookit assumes the attacker has already managed to gain root access to computer. Once loaded, the rootkit does the following tasks:
 
@@ -55,7 +60,7 @@ We tested the back door by doing
   sudo cat /etc/passwd
   su boogyman
  ```
-And then entered the password `password` for the `su` command since that is the deault password for the default username `boogyman`.
+And then entered the password `password` for the `su` command since that is the default password for the default username `boogyman`.
 ### Elevate UID
 We made a test program `testSetuid.c`. We tested the functionality of our rootkit by doing 
 ```
@@ -65,3 +70,8 @@ We made a test program `testSetuid.c`. We tested the functionality of our rootki
   sudo rmmod rootkit
 ```
 This runs `testSetuid.c` which prints its uid from before calling `setuid` with `magicNum` and then prints its uid after calling, which is 0.
+## References
+(http://tldp.org/LDP/lkmpg/2.6/html/lkmpg.html)
+(https://www.oreilly.com/library/view/linux-device-drivers/0596000081/ch03s04.html)
+(http://man7.org/linux/man-pages/man2/getdents.2.html)
+(https://www.kernel.org/doc/Documentation/security/credentials.txt)
