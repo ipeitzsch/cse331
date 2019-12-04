@@ -4,19 +4,19 @@ Ian Peitzsch, Mathews Thankachan, Xinhang Xie
 ## About
 This project is a rootkit in the form of a loadable kernel module for Linux Kernel version 2.6.38.8 and has been tested on Ubuntu 11.04 32-bit version. This rookit assumes the attacker has already managed to gain root access to computer. Once loaded, the rootkit does the following tasks:
 
--Hides specific files and directories from showing up when a user does `ls` and similar commands 
--Modifies the /etc/passwd and /etc/shadow file to add a backdoor account while returning the original contents of the files (pre-attack) when a normal user requests to see the file
--Hides specific processes from the process table when a user does a `ps`
--Give the ability to a malicious process to elevate its uid to 0 (root) upon demand 
+- Hides specific files and directories from showing up when a user does `ls` and similar commands 
+- Modifies the /etc/passwd and /etc/shadow file to add a backdoor account while returning the original contents of the files (pre-attack) when a normal user requests to see the file
+- Hides specific processes from the process table when a user does a `ps`
+- Give the ability to a malicious process to elevate its uid to 0 (root) upon demand 
 
 ## How to Use and How it Works
 ### Loading and Unloading
 After getting into the directory, run `./insertRootkit.sh`. This will make the rootkit.ko kernel object, load rootkit.ko into the kernel, and changes the permissions of `/proc/hidePid` to be writable. 
 `insertRootkit.sh` can be modified to make `sudo insmod rootkit.ko` also take in optional parameter, in the form of `sudo insmod rootkit.ko pass=<passwd> shad=<shadow> ending=<end> magicNum=<num>` where:
--`passwd` is a string the user wants to be written to `/etc/passwd`
--`shadow` is a string the user wants to be written to `/etc/shadow`
--`end` is a string the user wants to use to signify what files to hide
--`num` is an `int` the user wants to use to hack setuid 
+- `passwd` is a string the user wants to be written to `/etc/passwd`
+- `shadow` is a string the user wants to be written to `/etc/shadow`
+- `end` is a string the user wants to use to signify what files to hide
+- `num` is an `int` the user wants to use to hack setuid 
 All of these parameters have default values, so they are not necessary to run.
 The rootkit can then be unloaded by doing `sudo rmmod rootkit`.
 ### Hide Specific Files
